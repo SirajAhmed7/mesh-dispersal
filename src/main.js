@@ -1,9 +1,24 @@
 import "./style.css";
+import "lenis/dist/lenis.css";
+
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import GUI from "lil-gui";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+
 import vertexShader from "./shaders/faces/vertex.glsl";
 import fragmentShader from "./shaders/faces/fragment.glsl";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/**
+ * Lenis
+ */
+const lenis = new Lenis({
+  autoRaf: true,
+});
 
 /**
  * Base
@@ -16,13 +31,21 @@ const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
+// scene.background = null;
 
 /**
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
 const matcapTexture = await textureLoader.loadAsync(
-  "./textures/matcaps/gold-silver-128px.png",
+  // "./textures/matcaps/gold-silver-128px.png",
+  // "./textures/matcaps/gray-128px.png",
+  // "./textures/matcaps/green-shiny-512px.png",
+  // "./textures/matcaps/orange-512px.png",
+  // "./textures/matcaps/black-fresnel-128px.png",
+  "./textures/matcaps/black-shiny-512px.png",
+  // "./textures/matcaps/gold-128px.png",
+  // "./textures/matcaps/green-blue-128px.png",
 );
 matcapTexture.colorSpace = THREE.SRGBColorSpace;
 
@@ -30,79 +53,19 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace;
  * Test mesh
  */
 // Geometry
-const geometry = new THREE.IcosahedronGeometry(2, 20);
-// const geometry = new THREE.PlaneGeometry(4, 4, 32, 32);
-// geometry.toNonIndexed();
+const sphereGeometry = new THREE.IcosahedronGeometry(2, 20);
 
-const vertexCount = geometry.attributes.position.count;
-const positionsArray = geometry.getAttribute("position").array;
-
-const colorInstane = new THREE.Color();
-
-const colorArray = new Float32Array(vertexCount * 3);
-const endPositionArray = new Float32Array(vertexCount);
-// const delayArray = new Float32Array(vertexCount);
+const vertexCount = sphereGeometry.attributes.position.count;
+const positionsArray = sphereGeometry.getAttribute("position").array;
+const movementStrengthArray = new Float32Array(vertexCount);
 const centroidArray = new Float32Array(vertexCount * 3);
 
-// for (let i = 0; i < vertexCount / 3; i++) {
-//   const i9 = i * 9; // Each triangle has 3 vertices × 3 color components = 9 values
-
-//   const color = colorInstane.setRGB(
-//     Math.random(),
-//     Math.random(),
-//     Math.random(),
-//     THREE.SRGBColorSpace,
-//   );
-
-//   // First vertex
-//   colorArray[i9 + 0] = color.r;
-//   colorArray[i9 + 1] = color.g;
-//   colorArray[i9 + 2] = color.b;
-
-//   // Second vertex (3 positions later)
-//   colorArray[i9 + 3] = color.r;
-//   colorArray[i9 + 4] = color.g;
-//   colorArray[i9 + 5] = color.b;
-
-//   // Third vertex (6 positions later)
-//   colorArray[i9 + 6] = color.r;
-//   colorArray[i9 + 7] = color.g;
-//   colorArray[i9 + 8] = color.b;
-// }
-
-// for (let i = 0; i < vertexCount / 3; i++) {
-//   const color = colorInstane.setRGB(
-//     Math.random(),
-//     Math.random(),
-//     Math.random(),
-//     THREE.SRGBColorSpace,
-//   );
-
-//   // Each triangle has 3 vertices, assign the same color to all 3 vertices
-//   for (let j = 0; j < 3; j++) {
-//     const vertexIndex = i * 3 + j; // Get the vertex index for this triangle
-//     colorArray[vertexIndex * 3] = color.r;
-//     colorArray[vertexIndex * 3 + 1] = color.g;
-//     colorArray[vertexIndex * 3 + 2] = color.b;
-//   }
-// }
-
 for (let i = 0; i < vertexCount / 3; i++) {
-  const color = colorInstane.setRGB(
-    Math.random(),
-    Math.random(),
-    Math.random(),
-    THREE.SRGBColorSpace,
-  );
-
   let centroid = new THREE.Vector3();
 
   // Each triangle has 3 vertices, assign the same color to all 3 vertices
   for (let j = 0; j < 3; j++) {
     const vertexIndex = i * 3 + j; // Get the vertex index for this triangle
-    colorArray[vertexIndex * 3] = color.r;
-    colorArray[vertexIndex * 3 + 1] = color.g;
-    colorArray[vertexIndex * 3 + 2] = color.b;
 
     centroid.x += positionsArray[vertexIndex * 3];
     centroid.y += positionsArray[vertexIndex * 3 + 1];
@@ -130,43 +93,45 @@ for (let i = 0; i < vertexCount / 3; i++) {
   const i3 = i * 3;
 
   const randomEndPosition = Math.random() + 1.2;
-  endPositionArray[i3] = randomEndPosition;
-  endPositionArray[i3 + 1] = randomEndPosition;
-  endPositionArray[i3 + 2] = randomEndPosition;
+  movementStrengthArray[i3] = randomEndPosition;
+  movementStrengthArray[i3 + 1] = randomEndPosition;
+  movementStrengthArray[i3 + 2] = randomEndPosition;
 }
 
-geometry.setAttribute("color", new THREE.BufferAttribute(colorArray, 3));
-geometry.setAttribute(
+sphereGeometry.setAttribute(
   "aMovementStrength",
-  new THREE.BufferAttribute(endPositionArray, 1),
+  new THREE.BufferAttribute(movementStrengthArray, 1),
 );
 // geometry.setAttribute("aDelay", new THREE.BufferAttribute(delayArray, 1));
-geometry.setAttribute("aCentroid", new THREE.BufferAttribute(centroidArray, 3));
-
-// for (let i = 0; i < vertexCount; i += 3) {
-//   endPositionArray[i] = Math.random();
-//   delayArray[i] = Math.random();
-// }
-// Material
-// const material = new THREE.MeshMatcapMaterial({
-//   // color: "cyan",
-//   matcap: matcapTexture,
-//   // wireframe: true,
-// });
+sphereGeometry.setAttribute(
+  "aCentroid",
+  new THREE.BufferAttribute(centroidArray, 3),
+);
 
 const material = new THREE.ShaderMaterial({
   vertexShader,
   fragmentShader,
   vertexColors: true,
+  // side: THREE.DoubleSide,
   uniforms: {
-    uTime: new THREE.Uniform(0),
+    // uTime: new THREE.Uniform(0),
     uMatcap: new THREE.Uniform(matcapTexture),
+    uProgress: new THREE.Uniform(0),
   },
 });
 
+// gui
+//   .add(material.uniforms.uProgress, "value")
+//   .min(0)
+//   .max(1)
+//   .step(0.001)
+//   .name("Progress")
+//   .listen();
+
 // Mesh
-const mesh = new THREE.Mesh(geometry, material);
-scene.add(mesh);
+const sphere = new THREE.Mesh(sphereGeometry, material);
+scene.add(sphere);
+sphere.position.x = -3;
 
 /**
  * Sizes
@@ -203,24 +168,42 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.set(0, 0, 5);
 scene.add(camera);
 
-// Controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+// // Controls
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
 
 /**
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
+  alpha: true,
   canvas: canvas,
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setClearColor(0xffffff, 0);
+// renderer.setClearColor(0xffffff, 0);
 
 /**
  * Animate
  */
 const timer = new THREE.Timer();
+
+// ScrollTrigger.create();
+gsap.fromTo(
+  material.uniforms.uProgress,
+  {
+    value: 0,
+  },
+  {
+    scrollTrigger: {
+      trigger: ".section-1",
+      start: "top -20%",
+      end: "+=100%",
+      scrub: true,
+    },
+    value: 1,
+  },
+);
 
 const tick = () => {
   // Timer
@@ -228,10 +211,10 @@ const tick = () => {
   const elapsedTime = timer.getElapsed();
 
   // Update uniforms
-  material.uniforms.uTime.value = elapsedTime;
+  // material.uniforms.uTime.value = elapsedTime;
 
-  // Update controls
-  controls.update();
+  // // Update controls
+  // controls.update();
 
   // Render
   renderer.render(scene, camera);
