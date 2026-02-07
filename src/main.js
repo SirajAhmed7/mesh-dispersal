@@ -1,18 +1,13 @@
-import "./style.css";
 import "lenis/dist/lenis.css";
+import "./style.css";
 
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import GUI from "lil-gui";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import * as THREE from "three";
 
-import vertexShader from "./shaders/faces/vertex.glsl";
-import fragmentShader from "./shaders/faces/fragment.glsl";
-
-import Experience from "./experience/Experience";
 import DispersalObject from "./DispersalObject";
+import Experience from "./experience/Experience";
 
 gsap.registerPlugin(ScrollTrigger);
 
