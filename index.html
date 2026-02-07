@@ -16,24 +16,13 @@
     <canvas class="webgl"></canvas>
 
     <header
-      class="fixed top-4 left-1/2 -translate-x-1/2 rounded-full bg-neutral-50/5 border border-neutral-300/20 backdrop-blur-2xl drop-shadow-2xl px-4 py-2 w-[calc(100%-40px)] md:w-full sm:max-w-md z-50"
+      class="fixed top-4 left-1/2 -translate-x-1/2 rounded-full bg-neutral-50/5 border border-neutral-400/20 backdrop-blur-2xl drop-shadow-2xl px-4 py-2 w-[calc(100%-40px)] md:w-full sm:max-w-md z-50"
     >
       <div class="flex items-center justify-between">
         <h1 class="text-2xl text-neutral-900">Mesh Dispersal</h1>
 
-        <a href="#" target="_blank" class="size-5 block">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            fill="currentColor"
-            class="bi bi-github size-full text-neutral-900"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"
-            />
-          </svg>
+        <a href="#" target="_blank" class="flex items-center justify-center">
+          <i class="ph ph-github-logo text-2xl"></i>
         </a>
       </div>
     </header>
@@ -96,8 +85,101 @@
         </div>
       </section>
 
-      <section class="h-screen"></section>
+      <section class="h-screen flex flex-col justify-center items-center mt-20">
+        <h2 class="text-5xl text-center font-bold text-neutral-900 mb-10">
+          Check out my other explorations
+        </h2>
+
+        <div class="max-w-390 px-5 grid grid-cols-3 gap-6">
+          <!-- Blinds reveal scroll -->
+          <div class="space-y-3 relative">
+            <div class="aspect-video rounded-xl overflow-clip">
+              <img
+                src="./images/blinds-scroll.jpg"
+                alt="Blinds scroll reveal exploration screenshot"
+              />
+            </div>
+            <div class="flex w-full justify-between items-center">
+              <a
+                href="https://blinds-reveal-scroll-animation.vercel.app/"
+                target="_blank"
+                class="text-2xl text-neutral-900 after:absolute after:top-0 after:left-0 after:w-full after:h-full"
+              >
+                <span>Blinds reveal scroll</span>
+              </a>
+             
+              <i class="ph ph-arrow-up-right text-[28px] text-neutral-800"></i>
+            </div>
+          </div>
+
+          <!-- Sliced carousel -->
+          <div class="space-y-3 relative">
+            <div class="aspect-video rounded-xl overflow-clip">
+              <img
+                src="./images/sliced-carousel.jpg"
+                alt="Sliced carousel exploration screenshot"
+              />
+            </div>
+            <div class="flex w-full justify-between items-center">
+              <a
+                href="https://sliced-carousel.vercel.app/"
+                target="_blank"
+                class="text-2xl text-neutral-900 after:absolute after:top-0 after:left-0 after:w-full after:h-full"
+              >
+                <span>Sliced carousel</span>
+              </a>
+              
+              <i class="ph ph-arrow-up-right text-[28px] text-neutral-800"></i>
+            </div>
+          </div>
+
+          <!-- Hover pixelation -->
+          <div class="space-y-3 relative">
+            <div class="aspect-video rounded-xl overflow-clip">
+              <img
+                src="./images/hover-pixelation.jpg"
+                alt="Hover pixelation exploration screenshot"
+              />
+            </div>
+            <div class="flex w-full justify-between items-center">
+              <a
+                href="https://hover-pixelation.vercel.app/"
+                target="_blank"
+                class="text-2xl text-neutral-900 after:absolute after:top-0 after:left-0 after:w-full after:h-full"
+              >
+                <span>Hover pixelation</span>
+              </a>
+              
+              <i class="ph ph-arrow-up-right text-[28px] text-neutral-800"></i>
+          </div>
+        </div>
+      </section>
     </main>
+
+    <footer>
+      <div class="max-w-390 px-5 py-3 mx-auto">
+        <div class="w-full h-px bg-neutral-400 mb-3 mx-auto"></div>
+
+        <div class="flex justify-between">
+          <p>
+            Exploration by <a href="https://www.sirajahmed.com/" target="_blank" class="underline">Siraj Ahmed</a>
+          </p>
+
+          <div class="flex gap-5">
+            <a href="https://www.linkedin.com/in/siraj-ahmed-khatri/" target="_blank">
+              <i class="ph ph-linkedin-logo text-xl"></i>
+            </a>
+            <a href="https://github.com/SirajAhmed7" target="_blank">
+              <i class="ph ph-github-logo text-xl"></i>
+            </a>
+            <a href="https://dribbble.com/siraj-ahmed" target="_blank">
+              <i class="ph ph-dribbble-logo text-xl"></i>
+            </a>
+          </div>
+        </div>
+        </div>
+
+    </footer>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -27,7 +27,7 @@ const lenis = new Lenis({
  * Base
  */
 // Debug
-const gui = new GUI();
+// const gui = new GUI();
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -137,7 +137,7 @@ gsap.fromTo(
   {
     scrollTrigger: {
       trigger: ".section-1",
-      start: "top -10%",
+      start: "top top",
       end: "+=100%",
       scrub: true,
     },
