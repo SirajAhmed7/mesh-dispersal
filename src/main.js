@@ -11,6 +11,9 @@ import Lenis from "lenis";
 import vertexShader from "./shaders/faces/vertex.glsl";
 import fragmentShader from "./shaders/faces/fragment.glsl";
 
+import Experience from "./experience/Experience";
+import DispersalObject from "./DispersalObject";
+
 gsap.registerPlugin(ScrollTrigger);
 
 /**
@@ -28,110 +31,47 @@ const gui = new GUI();
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
+const experience = new Experience(canvas);
 
 // Scene
 const scene = new THREE.Scene();
 // scene.background = null;
 
 /**
- * Textures
+ * Objects
  */
-const textureLoader = new THREE.TextureLoader();
-const matcapTexture = await textureLoader.loadAsync(
-  // "./textures/matcaps/gold-silver-128px.png",
-  // "./textures/matcaps/gray-128px.png",
-  // "./textures/matcaps/green-shiny-512px.png",
-  // "./textures/matcaps/orange-512px.png",
-  // "./textures/matcaps/black-fresnel-128px.png",
-  "./textures/matcaps/black-shiny-512px.png",
-  // "./textures/matcaps/gold-128px.png",
-  // "./textures/matcaps/green-blue-128px.png",
-);
-matcapTexture.colorSpace = THREE.SRGBColorSpace;
 
-/**
- * Test mesh
- */
-// Geometry
+// SPHERE GEOMETRY
 const sphereGeometry = new THREE.IcosahedronGeometry(2, 20);
+// const sphereGeometry = new THREE.TorusGeometry(1.5, 0.8, 36, 64);
+// sphereGeometry.rotateY(Math.PI * 0.25);
 
-const vertexCount = sphereGeometry.attributes.position.count;
-const positionsArray = sphereGeometry.getAttribute("position").array;
-const movementStrengthArray = new Float32Array(vertexCount);
-const centroidArray = new Float32Array(vertexCount * 3);
+const sphere = new DispersalObject(sphereGeometry);
+scene.add(sphere.mesh);
+sphere.mesh.position.x = -3;
 
-for (let i = 0; i < vertexCount / 3; i++) {
-  let centroid = new THREE.Vector3();
+// DONUT GEOMETRY
+// const boxGeometry = new THREE.BoxGeometry(2.75, 2.75, 2.75, 20, 20, 20);
+// boxGeometry.rotateY(Math.PI * 0.385);
+const donutGeometry = new THREE.TorusGeometry(1.3, 0.7, 36, 80);
+donutGeometry.rotateY(Math.PI * 0.385);
+donutGeometry.rotateZ(Math.PI * 0.125);
+// sphereGeometry.rotateY(Math.PI * 0.25);
+const donut = new DispersalObject(donutGeometry);
+scene.add(donut.mesh);
+donut.mesh.position.x = -15;
+// box.mesh.rotation.y = Math.PI * 0.385;
 
-  // Each triangle has 3 vertices, assign the same color to all 3 vertices
-  for (let j = 0; j < 3; j++) {
-    const vertexIndex = i * 3 + j; // Get the vertex index for this triangle
+// gui.add(box.mesh.position, "x").min(-100).max(-3).step(1).name("BoxX").listen();
 
-    centroid.x += positionsArray[vertexIndex * 3];
-    centroid.y += positionsArray[vertexIndex * 3 + 1];
-    centroid.z += positionsArray[vertexIndex * 3 + 2];
-
-    if (j === 2) {
-      const i9 = i * 9; // Each triangle has 3 vertices × 3 color components = 9 values
-
-      centroid.divideScalar(3);
-
-      centroidArray[i9 + 0] = centroid.x;
-      centroidArray[i9 + 1] = centroid.y;
-      centroidArray[i9 + 2] = centroid.z;
-
-      centroidArray[i9 + 3] = centroid.x;
-      centroidArray[i9 + 4] = centroid.y;
-      centroidArray[i9 + 5] = centroid.z;
-
-      centroidArray[i9 + 6] = centroid.x;
-      centroidArray[i9 + 7] = centroid.y;
-      centroidArray[i9 + 8] = centroid.z;
-    }
-  }
-
-  const i3 = i * 3;
-
-  const randomEndPosition = Math.random() + 1.2;
-  movementStrengthArray[i3] = randomEndPosition;
-  movementStrengthArray[i3 + 1] = randomEndPosition;
-  movementStrengthArray[i3 + 2] = randomEndPosition;
-}
-
-sphereGeometry.setAttribute(
-  "aMovementStrength",
-  new THREE.BufferAttribute(movementStrengthArray, 1),
-);
-// geometry.setAttribute("aDelay", new THREE.BufferAttribute(delayArray, 1));
-sphereGeometry.setAttribute(
-  "aCentroid",
-  new THREE.BufferAttribute(centroidArray, 3),
-);
-
-const material = new THREE.ShaderMaterial({
-  vertexShader,
-  fragmentShader,
-  vertexColors: true,
-  // side: THREE.DoubleSide,
-  uniforms: {
-    // uTime: new THREE.Uniform(0),
-    uMatcap: new THREE.Uniform(matcapTexture),
-    uProgress: new THREE.Uniform(0),
-  },
-});
-
-// gui
-//   .add(material.uniforms.uProgress, "value")
-//   .min(0)
-//   .max(1)
-//   .step(0.001)
-//   .name("Progress")
-//   .listen();
-
-// Mesh
-const sphere = new THREE.Mesh(sphereGeometry, material);
-scene.add(sphere);
-sphere.position.x = -3;
+// CAPSULE GEOMETRY
+const capsuleGeometry = new THREE.CapsuleGeometry(1.25, 2, 10, 48, 16);
+capsuleGeometry.rotateX(Math.PI * -0.075);
+capsuleGeometry.rotateY(Math.PI * -0.125);
+capsuleGeometry.rotateZ(Math.PI * -0.125);
+const capsule = new DispersalObject(capsuleGeometry);
+scene.add(capsule.mesh);
+capsule.mesh.position.x = -15;
 
 /**
  * Sizes
@@ -186,18 +126,82 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 /**
  * Animate
  */
-const timer = new THREE.Timer();
 
 // ScrollTrigger.create();
+// SPHERE
 gsap.fromTo(
-  material.uniforms.uProgress,
+  sphere.material.uniforms.uProgress,
   {
     value: 0,
   },
   {
     scrollTrigger: {
       trigger: ".section-1",
-      start: "top -20%",
+      start: "top -10%",
+      end: "+=100%",
+      scrub: true,
+    },
+    value: 1,
+  },
+);
+
+// DONUT
+gsap.fromTo(
+  donut.mesh.position,
+  {
+    x: -15,
+  },
+  {
+    scrollTrigger: {
+      trigger: ".section-2",
+      start: "top 50%",
+      end: "top 15%",
+      scrub: true,
+    },
+    x: -3,
+  },
+);
+gsap.fromTo(
+  donut.material.uniforms.uProgress,
+  {
+    value: 0,
+  },
+  {
+    scrollTrigger: {
+      trigger: ".section-2",
+      start: "top top",
+      end: "+=100%",
+      scrub: true,
+    },
+    value: 1,
+  },
+);
+
+// CAPSULE
+gsap.fromTo(
+  capsule.mesh.position,
+  {
+    x: -15,
+  },
+  {
+    scrollTrigger: {
+      trigger: ".section-3",
+      start: "top 50%",
+      end: "top 15%",
+      scrub: true,
+    },
+    x: -3,
+  },
+);
+gsap.fromTo(
+  capsule.material.uniforms.uProgress,
+  {
+    value: 0,
+  },
+  {
+    scrollTrigger: {
+      trigger: ".section-3",
+      start: "top top",
       end: "+=100%",
       scrub: true,
     },
@@ -206,9 +210,9 @@ gsap.fromTo(
 );
 
 const tick = () => {
-  // Timer
-  timer.update();
-  const elapsedTime = timer.getElapsed();
+  // // Timer
+  // timer.update();
+  // const elapsedTime = timer.getElapsed();
 
   // Update uniforms
   // material.uniforms.uTime.value = elapsedTime;

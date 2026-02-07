@@ -29,13 +29,22 @@ void main() {
 
   // Particles random wind movement
   vec3 newCentroid = aCentroid * aMovementStrength;
+
   newCentroid.x += cos(cos(cos(uProgress * 24.0 * noiseMovement) * 3.0 + 4.0) + 7.2) * 2.0;
   newCentroid.y += sin(sin(sin(uProgress * 24.0 * noiseMovement) * 3.0 + 13.4) + 1.4) * 2.0;
   newCentroid.z += sin(sin(sin(uProgress * 24.0 * noiseMovement) * 3.0 + 2.4) + 1.2) * 2.0;
 
+  // vec3 newCentroid2 = aCentroid * aMovementStrength;
+  // newCentroid2.x += cos(uProgress * 24.0 * noiseMovement) * cos(uProgress * 7.0) * cos(uProgress + 9.2);
+  // newCentroid2.y += sin(uProgress * 24.0 * noiseMovement) * sin(uProgress * 4.7) * sin(uProgress + 13.4);
+  // newCentroid2.z += sin(uProgress * 24.0 * noiseMovement) * sin(uProgress * 7.5) * sin(uProgress + 11.2) * 2.0;
+
+  // newCentroid = mix(newCentroid2, newCentroid, progress);
+
   // Wind movement effect
   newCentroid.x += 2.5;
   newCentroid.y += 0.7;
+  // newCentroid.y += 1.7;
   newCentroid.z -= 5.5;
 
   vec3 newPosition = mix(position, newCentroid, pow(progress, 3.0));
