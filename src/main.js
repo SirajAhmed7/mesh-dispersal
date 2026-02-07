@@ -1,12 +1,15 @@
-import "./style.css";
 import "lenis/dist/lenis.css";
+import "./style.css";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import * as THREE from "three";
+import { inject } from "@vercel/analytics";
 
 import DispersalObject from "./DispersalObject";
+
+inject();
 
 gsap.registerPlugin(ScrollTrigger);
 
