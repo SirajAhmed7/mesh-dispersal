@@ -1,5 +1,5 @@
-import "lenis/dist/lenis.css";
 import "./style.css";
+import "lenis/dist/lenis.css";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -7,7 +7,6 @@ import Lenis from "lenis";
 import * as THREE from "three";
 
 import DispersalObject from "./DispersalObject";
-import Experience from "./experience/Experience";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -26,7 +25,6 @@ const lenis = new Lenis({
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
-const experience = new Experience(canvas);
 
 // Scene
 const scene = new THREE.Scene();
